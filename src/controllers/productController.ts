@@ -1,59 +1,42 @@
-import { PrismaClient } from "@prisma/client";
+import {
+  createProductService,
+  readProductService,
+} from "../services/productServices";
+import { Request, Response, NextFunction } from "express";
 import { Product } from "../types";
 import prisma from "../prisma_client/prismaClient";
+import { ResourceNotFound } from "../exceptions/rescourceNotFound";
 
-export default {
-  // create
-  createProduct: async (product: Product) => {
-    const favStatus =
-      product.isFavorite === undefined ? false : product.isFavorite;
+export const readSingleProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const prodId = req.params.id;
+  try {
+    const product = await readProductService(prodId);
+    res.status(200).json(product);
+  } catch (error) {
+    next(new ResourceNotFound());
+  }
+};
+export const readProducts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const products = await readProductService();
+    res.status(200).json(products);
+  } catch (error) {
+    next(new ResourceNotFound());
+  }
+};
 
-    const savedData = await prisma.product.create({
-      data: {
-        name: product.name,
-        description: product.description,
-        price: product.price.toPrecision(6.2),
-        imageUrl: product.imageUrl,
-        isFavorite: favStatus,
-      },
-    });
-    return savedData.id;
-  },
-  //read
-  readProduct: async (productId?: string) => {
-    if (!productId) {
-      return await prisma.product.findMany();
-    } else {
-      return await prisma.product.findFirst({
-        where: {
-          id: productId,
-        },
-      });
-    }
-  },
-
-  //delete
-  eleteProduct: async (productId: string) => {
-    const deletedProduct = await prisma.product.delete({
-      where: {
-        id: productId,
-      },
-    });
-  },
-
-  //update
-  updateProduct: async (product: Product) => {
-    const updatedProduct = await prisma.product.update({
-      where: {
-        id: product.id,
-      },
-      data: {
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        imageUrl: product.imageUrl,
-        isFavorite: product.isFavorite,
-      },
-    });
-  },
+export const createProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  console.log(req.body);
 };

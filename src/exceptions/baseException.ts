@@ -23,7 +23,7 @@ class HttpException extends Error {
 }
 
 enum CustomErrorCodes {
-  DB_CONNECTION_ERROR = 1111,
+  SERVER_ERROR = 1001,
 }
 
 export { HttpException, CustomErrorCodes };

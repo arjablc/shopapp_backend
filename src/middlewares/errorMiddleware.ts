@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { HttpException } from "../exceptions/baseException";
 import { Prisma } from "@prisma/client";
+import { PrismaClientInitializationError } from "@prisma/client/runtime/library";
 
 export function errorMiddleWare(
   error: HttpException,
@@ -8,18 +9,10 @@ export function errorMiddleWare(
   res: Response,
   next: NextFunction
 ) {
-  if (error.error === Prisma.PrismaClientInitializationError) {
-    console.log("Same error");
-  }
-
-  // if (error.error === Prisma.PrismaClientInitializationError) {
-  //   res.status(500).json({
-  //     error: "Database connection Error",
-  //   });
-  // }
   res.status(error.statusCode).json({
     message: error.message,
-    errorCode: error.code,
+    code: error.code,
   });
+
   next();
 }
