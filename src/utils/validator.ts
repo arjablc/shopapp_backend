@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import validator from "validator";
-import BadRequest from "../exceptions/badRequest";
+import BadRequest from "../errors/badRequest";
 import { readProductService } from "../services/productServices";
-import NotFound from "../exceptions/notFound";
+import NotFound from "../errors/notFound";
 
 export const productValidator = (
   req: Request,

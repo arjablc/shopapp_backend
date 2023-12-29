@@ -5,9 +5,9 @@ import {
   updateProductService,
 } from "../services/productServices";
 import { Request, Response, NextFunction } from "express";
-import NotFound from "../exceptions/notFound";
-import { Product } from "../types";
-import { InternalError } from "../exceptions/InternalError";
+import NotFound from "../errors/notFound";
+import { Product } from "../types/productType";
+import { InternalError } from "../errors/InternalError";
 
 export const readSingleProduct = async (
   req: Request,
