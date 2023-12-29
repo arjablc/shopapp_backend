@@ -1,11 +1,10 @@
 import { HttpException } from "./baseException";
 
-export class ResourceNotFound extends HttpException {
+export default class NotFound extends HttpException {
   constructor() {
     super({
+      message: "Resouce not found",
       statusCode: 404,
-      message: "Resource Not found",
-      code: 1002,
     });
   }
 }

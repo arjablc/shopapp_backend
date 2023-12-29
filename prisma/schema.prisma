@@ -15,7 +15,7 @@ model Product {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   name        String   @db.VarChar(255)
-  imageUrl    String   @db.VarChar(255)
+  imageUrl    String?  @db.VarChar(255)
   description String   @db.Text
   price       Decimal  @db.Decimal(6, 2)
   isFavorite  Boolean  @default(false) @db.TinyInt

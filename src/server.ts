@@ -1,16 +1,16 @@
 import express from "express";
 import productRouter from "./router/productRouter";
 import { errorMiddleWare } from "./middlewares/errorMiddleware";
+import { nextTick } from "process";
+import BadRequest from "./exceptions/badRequest";
 
 const app = express();
 // app.use(express.json());
 const port = process.env.PORT;
 app.use("/products", productRouter);
-app.all("*", (req, res) => {
-  res.status(400).json({
-    message: "bad Request",
-  });
-});
+// app.all("*", (req, res, next) => {
+//   next(new BadRequest("not a valid path"));
+// });
 
 app.use(errorMiddleWare);
 app.listen(port, () => {

@@ -1,7 +1,8 @@
-import prisma from "../prisma_client/prismaClient";
+import prisma from "../db/prismaClient";
 import { Product } from "../types";
 
 export const createProductService = async (product: Product) => {
+  console.log("service hit");
   const createdProduct = await prisma.product.create({
     data: product,
     select: {
@@ -13,13 +14,11 @@ export const createProductService = async (product: Product) => {
 
 export const readProductService = async (userId?: string) => {
   if (userId) {
-    console.log(
-      await prisma.product.findFirstOrThrow({
-        where: {
-          id: userId,
-        },
-      })
-    );
+    return await prisma.product.findFirstOrThrow({
+      where: {
+        id: userId,
+      },
+    });
   } else {
     return await prisma.product.findMany();
   }
@@ -33,10 +32,10 @@ export const deleteProductService = async (productId: string) => {
   });
 };
 
-export const updateProductService = async (product: Product) => {
+export const updateProductService = async (id: string, product: Product) => {
   await prisma.product.update({
     where: {
-      id: product.id,
+      id: id,
     },
     data: {
       name: product.name,
