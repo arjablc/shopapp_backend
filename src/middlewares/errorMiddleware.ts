@@ -7,9 +7,9 @@ export function errorMiddleWare(
   res: Response,
   next: NextFunction
 ) {
-  console.log(error.message);
   res.status(error.statusCode).json({
     message: error.message,
+    errors: error.error,
   });
 
   next();

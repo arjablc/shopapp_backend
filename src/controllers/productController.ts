@@ -6,7 +6,7 @@ import {
 } from "../services/productServices";
 import { Request, Response, NextFunction } from "express";
 import NotFound from "../errors/notFound";
-import { Product } from "../types/productType";
+import { Product } from "../schema/product";
 import { InternalError } from "../errors/InternalError";
 
 export const readSingleProduct = async (
@@ -86,10 +86,11 @@ export const updateProduct = async (
   };
   try {
     await updateProductService(req.params.id, incomingProduct);
-    res.status(204).json({
+    res.status(200).json({
       message: "resource updated Succesfully",
     });
   } catch (error) {
+    console.log(error);
     next(new InternalError());
   }
 };
@@ -102,9 +103,10 @@ export const toggleFavorite = async (
   try {
     const currentProduct = await readProductService(req.params.id);
     if (Array.isArray(currentProduct)) {
-      console.log("this is an array");
+      return;
     } else {
       currentProduct.isFavorite = !currentProduct.isFavorite;
+
       await updateProductService(req.params.id, currentProduct);
       res.status(204).json({
         message: "Product is now favorite",

@@ -8,25 +8,43 @@ import {
   toggleFavorite,
   updateProduct,
 } from "../controllers/productController";
-import { parmValidator, productValidator } from "../utils/validator";
+import { validateResource } from "../middlewares/validator";
+import { productSchema } from "../schema/product";
+import { parmSchema } from "../schema/parmSchema";
 
 const router = Router();
 
 router.use(bodyParser.json());
 
 //reading Product(s)
-router.get("/:id", parmValidator, readSingleProduct);
+router.get(
+  "/:id",
+  validateResource({ parmSchema: parmSchema }),
+  readSingleProduct
+);
 router.get("/", readProducts);
 
 //creating a new product
-router.post("/", productValidator, createProduct);
+router.post(
+  "/",
+  validateResource({ bodySchema: productSchema }),
+  createProduct
+);
 
 //deleting product
-router.delete("/:id", parmValidator, deleteProduct);
+router.delete("/:id", validateResource({ parmSchema }), deleteProduct);
 
 //update product
-router.put("/:id", parmValidator, updateProduct);
+router.put(
+  "/:id",
+  validateResource({ parmSchema: parmSchema, bodySchema: productSchema }),
+  updateProduct
+);
 
-router.put("/toggle-favorite/:id", parmValidator, toggleFavorite);
+router.put(
+  "/toggle-favorite/:id",
+  validateResource({ parmSchema }),
+  toggleFavorite
+);
 
 export default router;

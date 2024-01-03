@@ -1,5 +1,5 @@
 import prisma from "../db/prismaClient";
-import { Product } from "../types/productType";
+import { Product } from "../schema/product";
 
 export const createProductService = async (product: Product) => {
   console.log("service hit");
