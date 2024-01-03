@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { AnyZodObject, ZodError, ZodObject } from "zod";
+import { AnyZodObject, ZodError } from "zod";
 import BadRequest from "../errors/badRequest";
 ZodError;
 export const validateResource = ({

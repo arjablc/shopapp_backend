@@ -7,17 +7,21 @@ export const productSchema = z.object({
       required_error: "product name must be provided",
     })
     .max(100, "Name must be 100 characters max"),
-  price: z.union([
-    z
-      .number({
-        required_error: "price is required",
-        invalid_type_error: "price must be a number",
-      })
-      .refine((value) => value % 1 !== 0, {
-        message: "price must be a number",
-      }),
-    z.instanceof(Prisma.Decimal),
-  ]),
+  price: z.union(
+    [
+      z
+        .number({
+          invalid_type_error: "price must be a number",
+        })
+        .refine((value) => value % 1 !== 0, {
+          message: "price must be a Decimal",
+        }),
+      z.instanceof(Prisma.Decimal),
+    ],
+    {
+      required_error: "price must be provided",
+    }
+  ),
 
   imageUrl: z
     .string()

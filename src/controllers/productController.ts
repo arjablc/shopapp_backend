@@ -6,7 +6,7 @@ import {
 } from "../services/productServices";
 import { Request, Response, NextFunction } from "express";
 import NotFound from "../errors/notFound";
-import { Product } from "../schema/product";
+import { Product } from "../schema/productSchema";
 import { InternalError } from "../errors/InternalError";
 
 export const readSingleProduct = async (
@@ -69,7 +69,10 @@ export const deleteProduct = async (
     res.status(200).json({
       message: "Removed successfuly",
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      next(new NotFound());
+    }
     next(new InternalError());
   }
 };
@@ -89,8 +92,11 @@ export const updateProduct = async (
     res.status(200).json({
       message: "resource updated Succesfully",
     });
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      next(new NotFound());
+    }
+
     next(new InternalError());
   }
 };
@@ -112,7 +118,10 @@ export const toggleFavorite = async (
         message: "Product is now favorite",
       });
     }
-  } catch (error) {
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      next(new NotFound());
+    }
     next(new InternalError());
   }
 };

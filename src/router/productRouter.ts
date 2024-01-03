@@ -9,7 +9,7 @@ import {
   updateProduct,
 } from "../controllers/productController";
 import { validateResource } from "../middlewares/validator";
-import { productSchema } from "../schema/product";
+import { productSchema } from "../schema/productSchema";
 import { parmSchema } from "../schema/parmSchema";
 
 const router = Router();
