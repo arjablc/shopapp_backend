@@ -7,10 +7,10 @@ import {
   readSingleProduct,
   toggleFavorite,
   updateProduct,
-} from "../controllers/productController";
-import { validateResource } from "../middlewares/validator";
-import { productSchema } from "../schema/productSchema";
-import { parmSchema } from "../schema/parmSchema";
+} from "../controllers/product_controllers";
+import { validateResource } from "../middlewares/validation_middleware";
+import { productSchema } from "../schema/product_schema";
+import { parmSchema } from "../schema/parm_schema";
 
 const router = Router();
 
@@ -27,6 +27,7 @@ router.get("/", readProducts);
 //creating a new product
 router.post(
   "/",
+
   validateResource({ bodySchema: productSchema }),
   createProduct
 );

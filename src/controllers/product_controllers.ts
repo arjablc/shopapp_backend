@@ -5,9 +5,9 @@ import {
   updateProductService,
 } from "../services/productServices";
 import { Request, Response, NextFunction } from "express";
-import NotFound from "../errors/notFound";
-import { Product } from "../schema/productSchema";
-import { InternalError } from "../errors/InternalError";
+import NotFound from "../errors/not_fount_exception";
+import { Product } from "../schema/product_schema";
+import { InternalError } from "../errors/internal_exception";
 
 export const readSingleProduct = async (
   req: Request,
@@ -27,8 +27,10 @@ export const readProducts = async (
   res: Response,
   next: NextFunction
 ) => {
+  console.log(req.cookies);
   try {
     const products = await readProductService();
+
     res.status(200).json(products);
   } catch (error) {
     next(new NotFound());
@@ -40,7 +42,6 @@ export const createProduct = async (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("the create Product controller hit");
   const product: Product = {
     name: req.body.name,
     description: req.body.description,
@@ -49,7 +50,7 @@ export const createProduct = async (
   };
 
   try {
-    const id = await createProductService(product);
+    const id = await createProductService(product, "author");
     res.status(201).json({
       id: id.id,
     });

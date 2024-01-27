@@ -1,16 +1,17 @@
 import express from "express";
 import productRouter from "./router/productRouter";
 import { errorMiddleWare } from "./middlewares/errorMiddleware";
-import prisma from "./db/prismaClient";
-import authRouter from "./router/userRouter";
+import prisma from "./db/prisma_client";
+import authRouter from "./router/authRouters";
 import { exit } from "process";
 
 const app = express();
 const port = process.env.PORT;
+console.clear();
 testDbConnection();
 app.use(express.json());
 app.use("/products", productRouter);
-app.use("/user", authRouter);
+app.use("/auth", authRouter);
 async function testDbConnection() {
   try {
     await prisma.$connect();

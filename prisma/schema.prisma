@@ -19,11 +19,34 @@ model Product {
   description String   @db.Text
   price       Decimal  @db.Decimal(6, 2)
   isFavorite  Boolean  @default(false) @db.TinyInt
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    String
+
+  Order Order[]
 }
 
 model User {
-  id       String @id @unique @default(cuid())
-  name     String @db.VarChar(255)
-  password String
-  email    String @unique
+  id              String    @id @unique @default(cuid())
+  name            String    @db.VarChar(255)
+  password        String
+  email           String    @unique
+  createdProducts Product[]
+  orders          Order[]
+  auth            Auth?
+
+  @@index([email])
+}
+
+model Auth {
+  id     String @id @unique @default(cuid())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+}
+
+model Order {
+  id         String    @id @unique @default(cuid())
+  user       User      @relation(fields: [userId], references: [id])
+  userId     String
+  products   Product[]
+  totalPrice Decimal
 }

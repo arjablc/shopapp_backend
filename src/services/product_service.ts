@@ -1,10 +1,13 @@
-import prisma from "../db/prismaClient";
-import { Product } from "../schema/productSchema";
+import prisma from "../db/prisma_client";
+import { Product } from "../schema/product_schema";
 
-export const createProductService = async (product: Product) => {
+export const createProductService = async (
+  product: Product,
+  authorId: string
+) => {
   console.log("service hit");
   const createdProduct = await prisma.product.create({
-    data: product,
+    data: { ...product, authorId: authorId },
     select: {
       id: true,
     },

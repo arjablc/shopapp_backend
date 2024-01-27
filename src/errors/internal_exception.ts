@@ -1,4 +1,4 @@
-import { HttpException } from "./baseException";
+import { HttpException } from "./base_exception";
 
 export class InternalError extends HttpException {
   constructor() {

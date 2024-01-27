@@ -19,9 +19,12 @@ CREATE TABLE `User` (
     `name` VARCHAR(255) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
+    `accessToken` VARCHAR(191) NULL,
+    `refreshToken` VARCHAR(191) NULL,
 
     UNIQUE INDEX `User_id_key`(`id`),
-    UNIQUE INDEX `User_password_key`(`password`),
     UNIQUE INDEX `User_email_key`(`email`),
+    UNIQUE INDEX `User_accessToken_key`(`accessToken`),
+    UNIQUE INDEX `User_refreshToken_key`(`refreshToken`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
