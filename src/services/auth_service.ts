@@ -1,7 +1,9 @@
-import { SignOptions } from "jsonwebtoken";
-import prisma from "../db/prisma_client";
+import { prisma } from "../db/prisma_client";
 import { hash } from "../utils/hash_util";
 import { signJwt } from "../utils/jwt_util";
+import { redisClient } from "../db/redis_client";
+import { defaultConfig } from "../config/config";
+import { catchAsyncErrors } from "../utils/async_error_util";
 
 export const createUserService = async ({
   name,
@@ -24,27 +26,27 @@ export const createUserService = async ({
 };
 
 export const findUserByEmail = async (email: string) => {
-  const user = await prisma.user.findFirst({ where: { email: email } });
+  const user = await prisma.user.findFirst({ where: { email } });
   return user;
 };
-const accessTokenOptions: SignOptions = {
-  expiresIn: 60 * 2,
+
+export const findUserById = async (id: string) => {
+  const user = await prisma.user.findUnique({ where: { id } });
+  return user;
 };
-const refreshTokenOptions: SignOptions = {
-  expiresIn: 60 * 4,
-};
-const accessSecret = process.env.ACCESS_SECRET;
-const refreshSecret = process.env.REFRESH_TOKEN;
-export const giveJwtTokens = (userId: string) => {
+
+export const giveJwtTokens = async (userId: string) => {
+  //ideally redis should have a separate service but nvm
+  await redisClient.set(userId, "true");
   const accessToken = signJwt(
     { id: userId },
-    accessSecret!,
-    accessTokenOptions
+    defaultConfig.accessSecret,
+    defaultConfig.accessJwtSignOptions
   );
   const refreshToken = signJwt(
     { id: userId },
-    refreshSecret!,
-    refreshTokenOptions
+    defaultConfig.refreshSecret,
+    defaultConfig.refreshJwtSignOptions
   );
   return { accessToken, refreshToken };
 };

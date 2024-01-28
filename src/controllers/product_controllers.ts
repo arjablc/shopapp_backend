@@ -3,111 +3,73 @@ import {
   deleteProductService,
   readProductService,
   updateProductService,
-} from "../services/productServices";
+} from "../services/product_service";
 import { Request, Response, NextFunction } from "express";
-import NotFound from "../errors/not_fount_exception";
 import { Product } from "../schema/product_schema";
-import { InternalError } from "../errors/internal_exception";
+import { catchAsyncErrors } from "../utils/async_error_util";
 
-export const readSingleProduct = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const prodId = req.params.id;
-  try {
+export const readSingleProduct = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const prodId = req.params.id;
+
     const product = await readProductService(prodId);
     res.status(200).json(product);
-  } catch (error) {
-    next(new NotFound());
   }
-};
-export const readProducts = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  console.log(req.cookies);
-  try {
+);
+
+export const readProducts = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.cookies);
     const products = await readProductService();
 
     res.status(200).json(products);
-  } catch (error) {
-    next(new NotFound());
   }
-};
+);
 
-export const createProduct = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const product: Product = {
-    name: req.body.name,
-    description: req.body.description,
-    price: req.body.price,
-    imageUrl: req.body.imageUrl,
-  };
+export const createProduct = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const product: Product = {
+      name: req.body.name,
+      description: req.body.description,
+      price: req.body.price,
+      imageUrl: req.body.imageUrl,
+    };
 
-  try {
     const id = await createProductService(product, "author");
     res.status(201).json({
       id: id.id,
     });
-  } catch (error) {
-    next(new InternalError());
   }
-};
+);
 
-export const deleteProduct = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const id = req.params.id;
-  try {
+export const deleteProduct = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
     await deleteProductService(id);
     res.status(200).json({
       message: "Removed successfuly",
     });
-  } catch (error: any) {
-    if (error.code === "P2025") {
-      next(new NotFound());
-    }
-    next(new InternalError());
   }
-};
-export const updateProduct = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const incomingProduct: Product = {
-    name: req.body.name,
-    description: req.body.description,
-    price: req.body.price,
-    imageUrl: req.body.imageUrl,
-  };
-  try {
+);
+
+export const updateProduct = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const incomingProduct: Product = {
+      name: req.body.name,
+      description: req.body.description,
+      price: req.body.price,
+      imageUrl: req.body.imageUrl,
+    };
+
     await updateProductService(req.params.id, incomingProduct);
     res.status(200).json({
       message: "resource updated Succesfully",
     });
-  } catch (error: any) {
-    if (error.code === "P2025") {
-      next(new NotFound());
-    }
-
-    next(new InternalError());
   }
-};
+);
 
-export const toggleFavorite = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const toggleFavorite = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
     const currentProduct = await readProductService(req.params.id);
     if (Array.isArray(currentProduct)) {
       return;
@@ -119,10 +81,5 @@ export const toggleFavorite = async (
         message: "Product is now favorite",
       });
     }
-  } catch (error: any) {
-    if (error.code === "P2025") {
-      next(new NotFound());
-    }
-    next(new InternalError());
   }
-};
+);

@@ -1,2 +1,7 @@
-GET http://localhost:5173/products/
+POST http://localhost:5173/auth/login   
+Content-Type: application/json
+{
+    "email": "this is email", 
+    "password": 
+}
 

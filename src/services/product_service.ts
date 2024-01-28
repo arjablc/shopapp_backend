@@ -1,4 +1,4 @@
-import prisma from "../db/prisma_client";
+import { prisma } from "../db/prisma_client";
 import { Product } from "../schema/product_schema";
 
 export const createProductService = async (

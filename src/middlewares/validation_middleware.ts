@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { AnyZodObject, ZodError } from "zod";
-import BadRequest from "../errors/badRequest";
-ZodError;
+
+import { ValidationFailed } from "../exceptions/validation_failed_exception";
+
 export const validateResource = ({
   bodySchema,
   parmSchema,
@@ -9,7 +10,7 @@ export const validateResource = ({
   bodySchema?: AnyZodObject;
   parmSchema?: AnyZodObject;
 }) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (parmSchema) {
         parmSchema.parse(req.params);
@@ -18,12 +19,15 @@ export const validateResource = ({
         bodySchema.parse(req.body);
       }
       next();
-    } catch (error: any) {
-      const err: any = error.issues.map((e: any) => ({
-        path: e.path[0],
-        message: e.message,
-      }));
-      next(new BadRequest("validation failed", err));
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const err: any = error.issues.map((e: any) => ({
+          path: e.path[0],
+          message: e.message,
+        }));
+        console.log(err);
+        return next(new ValidationFailed(err));
+      }
     }
   };
 };

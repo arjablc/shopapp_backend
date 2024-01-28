@@ -11,13 +11,13 @@ export const signJwt = (
   return token;
 };
 
-export const verifyJwt = (
+export const verifyJwt = <T>(
   token: string,
   secret: string,
   option?: JWT.VerifyOptions
 ) => {
   try {
-    const result = JWT.verify(token, secret, option);
+    const result = JWT.verify(token, secret, option) as T;
     return { result, expired: false };
   } catch (error: any) {
     console.log(error);
