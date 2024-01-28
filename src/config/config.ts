@@ -1,5 +1,6 @@
 import { CookieOptions } from "express";
 import { SignOptions, VerifyOptions } from "jsonwebtoken";
+import { SetOptions } from "redis";
 const isProdEnv = process.env.NODE_ENVIRONMENT === "production";
 const accessTokenLife = 15;
 const refreshTokenLife = 43800;
@@ -12,6 +13,7 @@ type Config = {
   accessJwtSignOptions: SignOptions;
   accessSecret: string;
   refreshSecret: string;
+  redisSetOption: SetOptions;
 };
 const accessCookieOptions: CookieOptions = isProdEnv
   ? {
@@ -46,7 +48,11 @@ const accessJwtSignOptions: SignOptions = isProdEnv
   : {
       expiresIn: "2m",
     };
+const redisSetOption: SetOptions = {
+  EX: refreshTokenLife * 60,
+};
 export const defaultConfig: Config = {
+  redisSetOption,
   accessCookieOptions,
   refreshCookieOptions,
   accessJwtSignOptions,

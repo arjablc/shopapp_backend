@@ -37,7 +37,7 @@ export const findUserById = async (id: string) => {
 
 export const giveJwtTokens = async (userId: string) => {
   //ideally redis should have a separate service but nvm
-  await redisClient.set(userId, "true");
+  await redisClient.set(userId, "true", defaultConfig.redisSetOption);
   const accessToken = signJwt(
     { id: userId },
     defaultConfig.accessSecret,
