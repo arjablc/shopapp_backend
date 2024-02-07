@@ -1,13 +1,13 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "../db/prisma_client";
-import { Product } from "../schema/product_schema";
+import { ProductDto } from "../schema/product_schema";
 
 export const createProductService = async (
-  product: Product,
+  product: ProductDto,
   authorId: string
 ) => {
-  console.log("service hit");
   const createdProduct = await prisma.product.create({
-    data: { ...product, authorId: authorId },
+    data: { ...product, authorId },
     select: {
       id: true,
     },
@@ -15,11 +15,11 @@ export const createProductService = async (
   return createdProduct;
 };
 
-export const readProductService = async (userId?: string) => {
-  if (userId) {
+export const readProductService = async (productId?: string) => {
+  if (productId) {
     return await prisma.product.findFirstOrThrow({
       where: {
-        id: userId,
+        id: productId,
       },
     });
   } else {
@@ -35,17 +35,16 @@ export const deleteProductService = async (productId: string) => {
   });
 };
 
-export const updateProductService = async (id: string, product: Product) => {
+export const updateProductService = async (id: string, product: ProductDto) => {
+  const price = product.price;
+
   await prisma.product.update({
     where: {
       id: id,
     },
     data: {
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      imageUrl: product.imageUrl,
-      isFavorite: product.isFavorite,
+      ...product,
+      price: price,
     },
   });
 };

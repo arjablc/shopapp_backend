@@ -8,9 +8,13 @@ export const requireUser = (
 ) => {
   const user = res.locals.user;
 
-  if (!user) {
-    return next(new HttpException({ message: "forbidden", statusCode: 403 }));
+  if (req.path === "/products/") {
+    return next();
   }
-
+  if (!user) {
+    return next(
+      new HttpException({ message: "You are not logged In", statusCode: 401 })
+    );
+  }
   next();
 };

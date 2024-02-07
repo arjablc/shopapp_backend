@@ -3,36 +3,38 @@ import { hash } from "../utils/hash_util";
 import { signJwt } from "../utils/jwt_util";
 import { redisClient } from "../db/redis_client";
 import { defaultConfig } from "../config/config";
-import { catchAsyncErrors } from "../utils/async_error_util";
+import { Prisma } from "@prisma/client";
+import { UserDto } from "../schema/user_schema";
 
-export const createUserService = async ({
-  name,
-  password,
-  email,
-}: {
-  name: string;
-  password: string;
-  email: string;
-}) => {
-  const hashedPassword = await hash(password);
+export const createUserService = async (input: UserDto) => {
+  const hashedPassword = await hash(input.password);
+  input.password = hashedPassword;
   const newUser = await prisma.user.create({
-    data: {
-      email: email,
-      name: name,
-      password: hashedPassword,
-    },
+    data: input,
   });
   return newUser.id;
 };
 
-export const findUserByEmail = async (email: string) => {
-  const user = await prisma.user.findFirst({ where: { email } });
+interface userWhere {
+  id?: string;
+  email?: string;
+}
+export const findUniqueUser = async (where: userWhere) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: where.id,
+      email: where.email,
+    },
+  });
   return user;
 };
-
-export const findUserById = async (id: string) => {
-  const user = await prisma.user.findUnique({ where: { id } });
-  return user;
+export const updateUser = async (id: string, user: Partial<UserDto>) => {
+  await prisma.user.update({
+    where: {
+      id,
+    },
+    data: user,
+  });
 };
 
 export const giveJwtTokens = async (userId: string) => {
@@ -50,3 +52,6 @@ export const giveJwtTokens = async (userId: string) => {
   );
   return { accessToken, refreshToken };
 };
+function async(arg0: { placeholder: import("lodash").LoDashStatic }) {
+  throw new Error("Function not implemented.");
+}

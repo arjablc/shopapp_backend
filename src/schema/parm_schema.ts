@@ -6,5 +6,7 @@ export const parmSchema = z.object({
       required_error: "id parameter must be provided",
       invalid_type_error: "id must be of string",
     })
-    .uuid(),
+    .cuid({
+      message: "Invalid id prarmeter passed",
+    }),
 });

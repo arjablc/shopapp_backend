@@ -18,22 +18,33 @@ model Product {
   imageUrl    String?  @db.VarChar(255)
   description String   @db.Text
   price       Decimal  @db.Decimal(6, 2)
-  isFavorite  Boolean  @default(false) @db.TinyInt
   author      User     @relation(fields: [authorId], references: [id])
   authorId    String
 
-  Order Order[]
+  Order        Order[]
+  favoriteList favoriteList[]
 }
 
 model User {
-  id              String    @id @unique @default(cuid())
-  name            String    @db.VarChar(255)
-  password        String
-  email           String    @unique
-  createdProducts Product[]
-  orders          Order[]
+  id                 String    @id @unique @default(cuid())
+  name               String    @db.VarChar(255)
+  password           String
+  email              String    @unique
+  createdProducts    Product[]
+  orders             Order[]
+  passwordResetToken String?
+  passwordResetAt    DateTime?
+
+  favoriteList   favoriteList? @relation(fields: [favoriteListId], references: [id])
+  favoriteListId String?       @unique
 
   @@index([email])
+}
+
+model favoriteList {
+  id               String    @id @unique
+  user             User?
+  favoriteProducts Product[]
 }
 
 model Order {

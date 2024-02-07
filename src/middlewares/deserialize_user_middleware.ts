@@ -3,7 +3,7 @@ import { verifyJwt } from "../utils/jwt_util";
 import { verify } from "crypto";
 import { HttpException } from "../exceptions/base_exception";
 import { redisClient } from "../db/redis_client";
-import { findUserById, giveJwtTokens } from "../services/auth_service";
+import { findUniqueUser, giveJwtTokens } from "../services/auth_service";
 import { catchAsyncErrors } from "../utils/async_error_util";
 import { defaultConfig } from "../config/config";
 
@@ -17,7 +17,7 @@ function handleAccessToken(
   }>(accessToken, defaultConfig.accessSecret);
   // not expired accessToken = check for the session ?? or just give the data ?? TBD
   if (!accessExpired) {
-    res.locals.user = accessResult?.id;
+    res.locals.user = accessResult;
     return next();
   }
 }
@@ -53,7 +53,7 @@ async function handleRefreshToken(
   }
   console.log(session);
   // check if user exists
-  const user = await findUserById(refreshResult.id);
+  const user = await findUniqueUser({ id: refreshResult.id });
 
   if (!user) {
     return next(
@@ -69,7 +69,7 @@ async function handleRefreshToken(
   res.cookie("accessToken", newAccessToken, defaultConfig.accessCookieOptions);
 
   // give data
-  res.locals.user = user.id;
+  res.locals.user = user;
   next();
 }
 

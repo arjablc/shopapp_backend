@@ -5,7 +5,6 @@ import {
   deleteProduct,
   readProducts,
   readSingleProduct,
-  toggleFavorite,
   updateProduct,
 } from "../controllers/product_controllers";
 import { validateResource } from "../middlewares/validation_middleware";
@@ -38,14 +37,11 @@ router.delete("/:id", validateResource({ parmSchema }), deleteProduct);
 //update product
 router.put(
   "/:id",
-  validateResource({ parmSchema: parmSchema, bodySchema: productSchema }),
+  validateResource({
+    parmSchema: parmSchema,
+    bodySchema: productSchema.partial(),
+  }),
   updateProduct
-);
-
-router.put(
-  "/toggle-favorite/:id",
-  validateResource({ parmSchema }),
-  toggleFavorite
 );
 
 export default router;
