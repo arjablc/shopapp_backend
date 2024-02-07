@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { AnyZodObject, ZodError } from "zod";
+import { AnyZodObject, ZodEffects, ZodError } from "zod";
 
 import { ValidationFailed } from "../exceptions/validation_failed_exception";
 

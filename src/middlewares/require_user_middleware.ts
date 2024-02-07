@@ -1,19 +1,20 @@
-import { Request, Response, NextFunction } from "express";
-import { HttpException } from "../exceptions/base_exception";
+import { Request, Response, NextFunction } from 'express';
+import { HttpException } from '../exceptions/base_exception';
 
 export const requireUser = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  console.log('require user');
   const user = res.locals.user;
 
-  if (req.path === "/products/") {
+  if (req.path === '/products/') {
     return next();
   }
   if (!user) {
     return next(
-      new HttpException({ message: "You are not logged In", statusCode: 401 })
+      new HttpException({ message: 'You are not logged In', statusCode: 401 })
     );
   }
   next();

@@ -30,4 +30,9 @@ export const userLoginSchema = z.object({
     .min(6, "password must be minimum 6 characters long"),
 });
 
+export const resetPasswordSceham = z.object({
+  password: z.string({ required_error: "no password provided" }),
+  confirm: z.string({ required_error: "confirm the password" }),
+});
+
 export type UserDto = z.infer<typeof userCreateSchema>;

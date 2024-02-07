@@ -7,10 +7,9 @@ import {
 import { Request, Response, NextFunction } from "express";
 import { ProductDto } from "../schema/product_schema";
 import { catchAsyncErrors } from "../utils/async_error_util";
-import { number } from "zod";
-import { Product } from "@prisma/client";
-import { initial, isArray } from "lodash";
+import { isArray } from "lodash";
 import { UnauthorizedError } from "../exceptions/unauthorized_exception";
+import NotFound from "../exceptions/not_fount_exception";
 
 export const readSingleProduct = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -65,6 +64,7 @@ export const updateProduct = catchAsyncErrors(
     if (isArray(initialProduct)) {
       return;
     }
+
     if (res.locals.user.id !== initialProduct.authorId) {
       return next(new UnauthorizedError());
     }

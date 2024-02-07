@@ -15,11 +15,11 @@ export const catchAsyncErrors = (fn: Function) => {
         switch (error.code) {
           case "P2002":
             return next(new UniqueUserError(error));
-          case "2025":
+          case "P2025":
             return next(new NotFound());
           default:
             console.log("some prismaclientknown erorors were not handled");
-            return next(new UniqueUserError(error));
+            return next(new InternalError());
         }
       }
       if (error instanceof PrismaClientUnknownRequestError) {

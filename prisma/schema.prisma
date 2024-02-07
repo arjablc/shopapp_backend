@@ -32,7 +32,7 @@ model User {
   email              String    @unique
   createdProducts    Product[]
   orders             Order[]
-  passwordResetToken String?
+  passwordResetToken String?   @unique
   passwordResetAt    DateTime?
 
   favoriteList   favoriteList? @relation(fields: [favoriteListId], references: [id])
