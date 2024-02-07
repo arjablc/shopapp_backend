@@ -29,10 +29,14 @@ export const findUniqueUser = async (where: userWhere) => {
   return user;
 };
 interface PasswordResetInfo {
-  passwordResetToken: string;
-  passwordResetAt: Date;
+  passwordResetToken?: string;
+  passwordResetAt?: Date;
 }
-export const updateUser = async (id: string, user: Partial<UserDto>) => {
+export const updateUser = async (
+  id: string,
+  user: Partial<UserDto>,
+  passwordResetInfo?: PasswordResetInfo
+) => {
   if (user.password) {
     user.password = await hash(user.password);
   }
@@ -42,6 +46,7 @@ export const updateUser = async (id: string, user: Partial<UserDto>) => {
     },
     data: {
       ...user,
+      ...passwordResetInfo,
     },
   });
 };

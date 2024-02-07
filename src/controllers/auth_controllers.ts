@@ -16,6 +16,7 @@ import { catchAsyncErrors } from '../utils/async_error_util';
 import { LoginFailed } from '../exceptions/login_exception';
 import { sendMail } from '../utils/email';
 import { HttpException } from '../exceptions/base_exception';
+import { redisClient } from '../db/redis_client';
 
 export const signUp = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -112,10 +113,28 @@ export const resetPassword = catchAsyncErrors(
       });
     }
     //reset to the enw password
-    await updateUser(user.id, { password: req.body.password });
+    await updateUser(
+      user.id,
+      { password: req.body.password },
+      { passwordResetAt: undefined, passwordResetToken: undefined }
+    );
     res.status(200).json({
       status: 'success',
       message: 'password was changed successfully',
+    });
+  }
+);
+
+export const logoutUser = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    //remove user for redis
+    await redisClient.del(res.locals.user.id);
+    //remove the cookies
+    res.cookie('accessToken', '', { maxAge: 1 });
+    res.cookie('refreshToken', '', { maxAge: 1 });
+    res.status(200).json({
+      status: 'success',
+      message: 'logged out successfully',
     });
   }
 );

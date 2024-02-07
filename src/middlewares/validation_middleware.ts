@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from "express";
-import { AnyZodObject, ZodEffects, ZodError } from "zod";
+import { Request, Response, NextFunction } from 'express';
+import { AnyZodObject, ZodEffects, ZodError } from 'zod';
 
-import { ValidationFailed } from "../exceptions/validation_failed_exception";
+import { ValidationFailed } from '../exceptions/validation_failed_exception';
 
 export const validateResource = ({
   bodySchema,
@@ -25,7 +25,7 @@ export const validateResource = ({
           path: e.path[0],
           message: e.message,
         }));
-        console.log(err);
+
         return next(new ValidationFailed(err));
       }
     }

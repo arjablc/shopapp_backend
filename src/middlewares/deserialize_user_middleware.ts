@@ -1,11 +1,11 @@
-import { Request, Response, NextFunction } from "express";
-import { verifyJwt } from "../utils/jwt_util";
-import { verify } from "crypto";
-import { HttpException } from "../exceptions/base_exception";
-import { redisClient } from "../db/redis_client";
-import { findUniqueUser, giveJwtTokens } from "../services/auth_service";
-import { catchAsyncErrors } from "../utils/async_error_util";
-import { defaultConfig } from "../config/config";
+import { Request, Response, NextFunction } from 'express';
+import { verifyJwt } from '../utils/jwt_util';
+import { verify } from 'crypto';
+import { HttpException } from '../exceptions/base_exception';
+import { redisClient } from '../db/redis_client';
+import { findUniqueUser, giveJwtTokens } from '../services/auth_service';
+import { catchAsyncErrors } from '../utils/async_error_util';
+import { defaultConfig } from '../config/config';
 
 function handleAccessToken(
   res: Response,
@@ -35,7 +35,7 @@ async function handleRefreshToken(
   if (refreshExpired || !refreshResult) {
     return next(
       new HttpException({
-        message: "Not Authorized -> ref verify error",
+        message: 'Not Authorized -> ref verify error',
         statusCode: 403,
       })
     );
@@ -46,19 +46,19 @@ async function handleRefreshToken(
   if (!session) {
     return next(
       new HttpException({
-        message: "Not Authorized -> checking redis ",
+        message: 'Not Authorized -> checking redis ',
         statusCode: 403,
       })
     );
   }
-  console.log(session);
+
   // check if user exists
   const user = await findUniqueUser({ id: refreshResult.id });
 
   if (!user) {
     return next(
       new HttpException({
-        message: "No such user -> found while checking user",
+        message: 'No such user -> found while checking user',
         statusCode: 403,
       })
     );
@@ -66,7 +66,7 @@ async function handleRefreshToken(
 
   //create a new accessToken
   const { accessToken: newAccessToken } = await giveJwtTokens(user.id);
-  res.cookie("accessToken", newAccessToken, defaultConfig.accessCookieOptions);
+  res.cookie('accessToken', newAccessToken, defaultConfig.accessCookieOptions);
 
   // give data
   res.locals.user = user;

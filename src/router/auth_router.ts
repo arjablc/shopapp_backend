@@ -4,6 +4,7 @@ import {
   signUp,
   forgotPassword,
   resetPassword,
+  logoutUser,
 } from '../controllers/auth_controllers';
 import { validateResource } from '../middlewares/validation_middleware';
 import {
@@ -12,6 +13,9 @@ import {
   resetPasswordSceham,
 } from '../schema/user_schema';
 import { ZodObject, z } from 'zod';
+import { deserialize } from 'v8';
+import { deserializeUser } from '../middlewares/deserialize_user_middleware';
+import { requireUser } from '../middlewares/require_user_middleware';
 
 const router = Router();
 
@@ -44,5 +48,7 @@ router.put(
   }),
   resetPassword
 );
+
+router.get('/logout', deserializeUser, requireUser, logoutUser);
 
 export default router;
