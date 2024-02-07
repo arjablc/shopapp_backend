@@ -29,6 +29,7 @@ async function handleRefreshToken(
   //expired accessToken = check refreshtoken
   const { result: refreshResult, expired: refreshExpired } = verifyJwt<{
     id: string;
+    iat: number;
   }>(refreshToken, defaultConfig.refreshSecret);
 
   //expired refresh token = 403
@@ -62,6 +63,15 @@ async function handleRefreshToken(
         statusCode: 403,
       })
     );
+  }
+  if (
+    user.passwordResetAt &&
+    user.passwordResetAt.getTime() > refreshResult.iat
+  ) {
+    return res.status(403).json({
+      status: 'failure',
+      message: 'The password was recently changed. Please login again',
+    });
   }
 
   //create a new accessToken

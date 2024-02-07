@@ -3,7 +3,6 @@ import { hash } from '../utils/hash_util';
 import { signJwt } from '../utils/jwt_util';
 import { redisClient } from '../db/redis_client';
 import { defaultConfig } from '../config/config';
-import { Prisma } from '@prisma/client';
 import { UserDto } from '../schema/user_schema';
 
 export const createUserService = async (input: UserDto) => {

@@ -85,7 +85,7 @@ export const forgotPassword = catchAsyncErrors(
       'Forgot your password for our Ecommerce application ?? Please click in the link provided in this email below, or copy and paste it in your browser';
     const resetLink = `${req.protocol}://${req.get(
       'host'
-    )}/auth/reset-password/${resetToken}`;
+    )}/api/v1/auth/reset-password/${resetToken}`;
     await sendMail({
       to: user?.email,
       subject: 'Reset password at Jonas Ecom',
@@ -116,7 +116,7 @@ export const resetPassword = catchAsyncErrors(
     await updateUser(
       user.id,
       { password: req.body.password },
-      { passwordResetAt: undefined, passwordResetToken: undefined }
+      { passwordResetToken: undefined }
     );
     res.status(200).json({
       status: 'success',
